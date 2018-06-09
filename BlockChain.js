@@ -40,7 +40,18 @@ export default class BlockChain {
      * 3. If every block is full(has 10 participants), return -1.
      */
     findGame = () => {
+        const chainLength = this.chain.length;
+        let leastNumParticipants = 0;
+        let leastCrowdedGameBlockIdx = 0;
 
+        for (let i = 1; i < chainLength; i++) {
+            if(leastCrowdedGameBlock > this.chain[i].getNumParticipants)
+                leastNumParticipants = this.chain[i].getNumParticipants;
+                leastCrowdedGameBlockIdx = i;
+        }
+
+        if(leastNumParticipants >= 10) return -1;
+        return leastCrowdedGameBlockIdx;
     };
 
     /*
@@ -48,7 +59,23 @@ export default class BlockChain {
      * 2. Get cards
      */
     joinGame = (userID) => {
-        
+        const gameIdx = this.findGame();
+        if (gameIdx <= 0) {
+            console.log("Every gameblock is full. Why don\'t you make a new game block and be a room master?")
+            return;
+        }
+
+        const remainDeck = currentGameBlock.getLatestDeckHistory();
+        const cards = [];
+        while (cards.length < 2) {
+            let cardCandidate = Math.floor(Math.random() * 100 % 20);
+            if (cardCandidate in remainDeck) {
+                cards.push(cardCandidate);
+            }
+        }
+        this.currentGameBlock = this.getSpecificBlock(gameIdx);
+        this.currentGameBlock.addTransation('deckHistory', arrayDiff(remainDeck, cards));
+        this.currentGameBlock.addTransation('cardDispense', {userID: cards});
     };
 
     betStakes = () => {
@@ -57,19 +84,19 @@ export default class BlockChain {
 
     isChainValid = () => {
         let currentIdx = this.chain.length;
-        while(currentIdx > 1) {
+        while (currentIdx > 1) {
             let currentBlock = this.chain[--currentIdx];
             let zeros = "";
             for (let i = 0; i < this.difficulty; i++) zeros += "0";
 
             /* hash test */
-            if(currentBlock.hash !== currentBlock.calculateHash()) return false;
+            if (currentBlock.hash !== currentBlock.calculateHash()) return false;
 
             /* hash validity test */
-            if(currentBlock.hash.substring(0, this.difficulty) !== zeros) return false;
+            if (currentBlock.hash.substring(0, this.difficulty) !== zeros) return false;
 
             /* chain connection test */
-            if(currentBlock.previousHash !== this.chain[currentIdx - 1].hash) return false;
+            if (currentBlock.previousHash !== this.chain[currentIdx - 1].hash) return false;
         }
         return true;
     };
