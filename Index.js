@@ -1,10 +1,9 @@
 'use strict';
-import Block from './Block';
-import BlockChain from './BlockChain';
-import readln from 'readline';
-const rl = readln.createInterface( process.stdin, process.stdout );
+import Node from './Node';
+import readLine from 'readline';
 
-const chain = new BlockChain();
+const node = new Node('A');
+const rl = readLine.createInterface( process.stdin, process.stdout );
 let executionLoop = true;
 
 const promptInput = (prompt, handler) => {
@@ -16,26 +15,14 @@ const promptInput = (prompt, handler) => {
     });
 };
 
-const mine = () => {
-    chain.addBlock(new Block);
-};
-
-const createTransaction = (transaction) => {
-    chain.addTr
-};
-
-
-/* main procedure from here */
-
-chain.createGenesisBlock();
-
 while (executionLoop) {
     promptInput('gamble chain > ', input => {
         switch(input) {
-            case 'mine':
-                mine();
+            case 'make':
+                node.makeGameRoom();
                 break;
-            case 'createTransaction':
+            case 'join':
+                node.join();
                 break;
             case 'exit':
                 executionLoop = false;
