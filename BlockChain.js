@@ -1,6 +1,6 @@
 'use strict';
 import Block from './Block';
-import arrayDiff from './utils/arrayUtills';
+import {arrayDiff} from './utils/arrayUtills';
 
 export default class BlockChain {
     constructor(difficulty) {
@@ -45,12 +45,12 @@ export default class BlockChain {
         let leastCrowdedGameBlockIdx = 0;
 
         for (let i = 1; i < chainLength; i++) {
-            if(leastCrowdedGameBlock > this.chain[i].getNumParticipants)
+            if(leastCrowdedGameBlockIdx > this.chain[i].getNumParticipants)
                 leastNumParticipants = this.chain[i].getNumParticipants;
                 leastCrowdedGameBlockIdx = i;
         }
 
-        if(leastNumParticipants >= 10) return -1;
+        if(leastNumParticipants >= 9) return -1;
         return leastCrowdedGameBlockIdx;
     };
 
@@ -60,22 +60,23 @@ export default class BlockChain {
      */
     joinGame = (userID) => {
         const gameIdx = this.findGame();
-        if (gameIdx <= 0) {
+        if (gameIdx < 0) {
             console.log("Every gameblock is full. Why don\'t you make a new game block and be a room master?")
             return;
         }
+        this.currentGameBlock = this.chain[gameIdx];
 
-        const remainDeck = currentGameBlock.getLatestDeckHistory();
+        const remainDeck = this.currentGameBlock.getLatestDeckHistory();
         const cards = [];
         while (cards.length < 2) {
-            let cardCandidate = Math.floor(Math.random() * 100 % 20);
+            let cardCandidate = Math.floor(Math.random() * 100 % 20 + 1);
             if (cardCandidate in remainDeck) {
                 cards.push(cardCandidate);
             }
         }
         this.currentGameBlock = this.getSpecificBlock(gameIdx);
-        this.currentGameBlock.addTransation('deckHistory', arrayDiff(remainDeck, cards));
-        this.currentGameBlock.addTransation('cardDispense', {userID: cards});
+        this.currentGameBlock.addTransaction("deckHistory", arrayDiff(remainDeck, cards));
+        this.currentGameBlock.addTransaction("cardDispense", {userID: cards});
     };
 
     betStakes = () => {
