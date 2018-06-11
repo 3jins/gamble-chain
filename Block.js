@@ -32,13 +32,13 @@ export default class Block {
         return sha256(this.timestamp + JSON.stringify(this.transaction) + this.previousHash + this.nonce).toString();
     };
 
-    mine = () => {
+    mine = (difficulty) => {
         let zeros = "";
-        for (let i = 0; i < this.difficulty; i++) zeros += "0";
+        for (let i = 0; i < difficulty; i++) zeros += "0";
 
         while(true) {
             const hash = this.calculateHash();
-            if (hash.substring(0, this.difficulty) === zeros) {
+            if (hash.substring(0, difficulty) === zeros) {
                 this.hash = hash;
                 break;
             }
