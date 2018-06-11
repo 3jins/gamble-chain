@@ -1,7 +1,9 @@
-const checkTimeSpent = (callback, userID, role) => {
+const checkTimeSpent = async (callback, userID, role) => {
     let start = new Date();
-    callback();
+    const callbackPromise = await callback();
     console.log(userID + " has spent " + ((new Date() - start) / 1000) + " seconds to " + role + ".");
+
+    return callbackPromise;
 };
 
 export {checkTimeSpent};
