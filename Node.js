@@ -3,21 +3,17 @@ import Block from './Block';
 import BlockChain from './BlockChain';
 
 export default class Node {
-    constructor(userID) {
+    constructor(userID, difficulty) {
         this.userID = userID;
-        this.chain = new BlockChain();
+        this.chain = new BlockChain(difficulty);
         this.chain.createGenesisBlock();
     }
 
     makeGameRoom = () => {
-        chain.addBlock(new Block);
+        this.chain.addBlock(new Block);
     };
 
     join = () => {
-        chain.joinGame(this.userID);
+        this.chain.joinGame(this.userID);
     };
-
-
 }
-
-
