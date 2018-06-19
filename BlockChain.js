@@ -60,6 +60,7 @@ export default class BlockChain {
      */
     joinGame = (userID) => {
         const gameIdx = this.findGame();
+        const cardDispense = {};
         if (gameIdx < 0) {
             console.log("Every gameblock is full. Why don\'t you make a new game block and be a room master?")
             return;
@@ -76,7 +77,8 @@ export default class BlockChain {
         }
         this.currentGameBlock = this.getSpecificBlock(gameIdx);
         this.currentGameBlock.addTransaction("deckHistory", arrayDiff(remainDeck, cards));
-        this.currentGameBlock.addTransaction("cardDispense", {userID: cards});
+        cardDispense[userID] = cards;
+        this.currentGameBlock.addTransaction("cardDispense", cardDispense);
     };
 
     betStakes = () => {
