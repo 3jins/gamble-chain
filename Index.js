@@ -20,7 +20,7 @@ promptInput('gamble chain > ', input => {
             node.makeGameRoom();
             break;
         case 'join':
-            node.join();
+            node.joinGame();
             break;
         case 'exit':
             return false;

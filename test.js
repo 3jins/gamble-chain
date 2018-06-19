@@ -11,7 +11,7 @@ checkTimeSpent(
     "create a new game block"
 ).then(() => {
     checkTimeSpent(
-        () => nodeB.join(),
+        () => nodeB.joinGame(),
         nodeB.userID,
         "join a game"
     );

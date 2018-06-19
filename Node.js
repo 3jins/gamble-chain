@@ -13,7 +13,9 @@ export default class Node {
         this.chain.addBlock(new Block);
     };
 
-    join = () => {
+    joinGame = () => {
         this.chain.joinGame(this.userID);
     };
+
+
 }
