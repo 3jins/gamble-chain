@@ -17,5 +17,7 @@ export default class Node {
         this.chain.joinGame(this.userID);
     };
 
-
+    betStakes = (stake) => {
+        this.chain.betStakes(this.userID, stake);
+    }
 }

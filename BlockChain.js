@@ -7,7 +7,7 @@ export default class BlockChain {
         this.chain = [this.createGenesisBlock()];
         this.difficulty = difficulty;
         this.pendingTransactions = [];
-        this.currentGameBlock;
+        this.currentGameBlock = null;
         //this.miningReward = 100;  // Maybe it won't needed in this system.
     }
 
@@ -81,8 +81,13 @@ export default class BlockChain {
         this.currentGameBlock.addTransaction("cardDispenseHistory", cardDispense);
     };
 
-    betStakes = () => {
+    /* Add a betting record to the game block. */
+    betStakes = (userID, stake) => {
+        if(this.currentGameBlock === null) return false;
 
+        const bettingRecord = {};
+        bettingRecord[userID] = stake;
+        this.currentGameBlock.addTransaction("bettingHistory", bettingRecord);
     };
 
     isChainValid = () => {
