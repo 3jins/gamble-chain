@@ -1,5 +1,5 @@
 'use strict';
-import sha256 from 'crypto-js/sha256';
+import calcHash from 'crypto-js/sha256';
 
 export default class Block {
     constructor(initialTransaction, previousHash = '') {
@@ -11,9 +11,9 @@ export default class Block {
             'bettingHistory': [],
         };
         this.timestamp = new Date();
-        this.previousHash = previousHash;
+        this.previousBlockHash = previousHash;
         this.nonce = 0;
-        this.hash = this.calculateHash();
+        this.blockHash = this.calculateBlockHash();
     }
 
     getNumParticipants = () => {
@@ -28,8 +28,8 @@ export default class Block {
         this.transactions[type].push(data);
     };
 
-    calculateHash = () => {
-        return sha256(this.timestamp + JSON.stringify(this.transaction) + this.previousHash + this.nonce).toString();
+    calculateBlockHash = () => {
+        return calcHash(this.timestamp + JSON.stringify(this.transaction) + this.previousBlockHash + this.nonce).toString();
     };
 
     mine = (difficulty) => {
@@ -37,9 +37,9 @@ export default class Block {
         for (let i = 0; i < difficulty; i++) zeros += "0";
 
         while(true) {
-            const hash = this.calculateHash();
+            const hash = this.calculateBlockHash();
             if (hash.substring(0, difficulty) === zeros) {
-                this.hash = hash;
+                this.blockHash = hash;
                 break;
             }
             this.nonce++;
@@ -47,6 +47,6 @@ export default class Block {
 
         console.log("Mining completed!");
         console.log("New block\'s nonce: " + this.nonce);
-        console.log("New block\'s hash: " + this.hash);
+        console.log("New block\'s blockHash: " + this.blockHash);
     };
 }

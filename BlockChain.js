@@ -25,7 +25,7 @@ export default class BlockChain {
 
     addBlock = (newBlock) => {
         const latestBlock = this.getLatestBlock();
-        newBlock.previousHash = latestBlock.hash;
+        newBlock.previousBlockHash = latestBlock.blockHash;
         newBlock.mine(this.difficulty);
         this.chain.push(newBlock);
     };
@@ -97,14 +97,14 @@ export default class BlockChain {
             let zeros = "";
             for (let i = 0; i < this.difficulty; i++) zeros += "0";
 
-            /* hash test */
-            if (currentBlock.hash !== currentBlock.calculateHash()) return false;
+            /* blockHash test */
+            if (currentBlock.blockHash !== currentBlock.calculateHash()) return false;
 
-            /* hash validity test */
-            if (currentBlock.hash.substring(0, this.difficulty) !== zeros) return false;
+            /* blockHash validity test */
+            if (currentBlock.blockHash.substring(0, this.difficulty) !== zeros) return false;
 
             /* chain connection test */
-            if (currentBlock.previousHash !== this.chain[currentIdx - 1].hash) return false;
+            if (currentBlock.previousBlockHash !== this.chain[currentIdx - 1].blockHash) return false;
         }
         return true;
     };
