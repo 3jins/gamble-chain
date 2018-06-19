@@ -78,7 +78,7 @@ export default class BlockChain {
         this.currentGameBlock = this.getSpecificBlock(gameIdx);
         this.currentGameBlock.addTransaction("deckHistory", arrayDiff(remainDeck, cards));
         cardDispense[userID] = cards;
-        this.currentGameBlock.addTransaction("cardDispense", cardDispense);
+        this.currentGameBlock.addTransaction("cardDispenseHistory", cardDispense);
     };
 
     betStakes = () => {
