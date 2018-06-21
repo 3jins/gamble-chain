@@ -1,6 +1,6 @@
 'use strict';
 import Block from './Block';
-import {arrayDiff} from './utils/arrayUtills';
+import {arrayDiff} from './utils/ArrayUtills';
 
 export default class BlockChain {
     constructor(difficulty) {
