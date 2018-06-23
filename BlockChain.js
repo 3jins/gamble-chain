@@ -4,7 +4,7 @@ import {arrayDiff} from './utils/ArrayUtills';
 
 export default class BlockChain {
     constructor(difficulty) {
-        this.chain = [this.createGenesisBlock()];
+        this.chain = [];
         this.difficulty = difficulty;
         this.pendingTransactions = [];
         this.currentGameBlock = null;
@@ -16,6 +16,7 @@ export default class BlockChain {
     };
 
     getLatestBlock = () => {
+        if(this.chain.length === 0) return null;
         return this.chain[this.chain.length - 1];
     };
 
@@ -25,6 +26,10 @@ export default class BlockChain {
 
     addBlock = (newBlock) => {
         const latestBlock = this.getLatestBlock();
+        if(latestBlock === null) {
+            this.chain.push(this.createGenesisBlock());
+            return;
+        }
         newBlock.previousBlockHash = latestBlock.blockHash;
         newBlock.mine(this.difficulty);
         this.chain.push(newBlock);
