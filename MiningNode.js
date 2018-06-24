@@ -9,6 +9,12 @@ export default class MiningNode extends Node {
     }
 
     makeGameRoom = () => {
-        this.chain.addBlock(new Block);
+        if(this.chain.getLatestBlock() === null) {  // There is no block in chain
+            (async () => await this.chain.createGenesisBlock())()
+                .then(() => this.chain.addBlock(new Block));
+        }
+        else {  // There is at least one block in chain
+            this.chain.addBlock(new Block);
+        }
     };
 }

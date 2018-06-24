@@ -12,7 +12,7 @@ export default class BlockChain {
     }
 
     createGenesisBlock = () => {
-        return new Block("Genesis Block");
+        this.chain.push(new Block("Genesis Block"));
     };
 
     getLatestBlock = () => {
@@ -26,10 +26,6 @@ export default class BlockChain {
 
     addBlock = (newBlock) => {
         const latestBlock = this.getLatestBlock();
-        if(latestBlock === null) {
-            this.chain.push(this.createGenesisBlock());
-            return;
-        }
         newBlock.previousBlockHash = latestBlock.blockHash;
         newBlock.mine(this.difficulty);
         this.chain.push(newBlock);
