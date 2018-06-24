@@ -70,6 +70,7 @@ export default class BlockChain {
             return;
         }
         this.currentGameBlock = this.chain[gameIdx];
+        console.log(userID + " joined a game block. (game index: " + gameIdx + ")");
     };
 
     checkUnanimityGameStart = () => {
@@ -81,7 +82,9 @@ export default class BlockChain {
 
     suggestGameStart = (userID) => {
         this.currentGameBlock.addTransaction("gameStartPolls", userID);
+        console.log(userID + " suggested start the game.");
         if (this.checkUnanimityGameStart()) {
+            console.log("Every node in this gameblock agreed to start the game.");
             const gameBlockMiner = this.currentGameBlock.miner;
             nodes[gameBlockMiner].dispenseCards(this.currentGameBlock);
         }
@@ -106,6 +109,15 @@ export default class BlockChain {
             cardDispense[participants[i]] = cards;
             this.currentGameBlock.addTransaction("cardDispenseHistory", cardDispense);
         }
+
+        let msg = "Cards are dispensed to ";
+        for(let i = 0; i < numParticipants; i++) {
+            msg += participants[i];
+            if(i < numParticipants) {
+                msg += ", ";
+            }
+        }
+        console.log(msg);
     };
 
     /* Add a betting record to the game block. */
@@ -115,6 +127,8 @@ export default class BlockChain {
         const bettingRecord = {};
         bettingRecord[userID] = stake;
         this.currentGameBlock.addTransaction("bettingHistory", bettingRecord);
+
+        console.log(userID + " bet! ($" + stake + ")");
     };
 
     isChainValid = () => {
