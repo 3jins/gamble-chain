@@ -13,4 +13,20 @@ const arrayDiff = (a, b) => {
     return res;
 };
 
-export {arrayDiff};
+/* Check if two given arrays are same or not.
+ * If 'isStrict' option is true, it checks the order of elements as well as.
+ */
+const compareArray = (a, b, isStrict = true) => {
+    if (typeof a !== "object" || typeof b !== "object") return false;
+    if (a.length !== b.length) return false;
+    const len = a.length;
+
+    if (!isStrict) return arrayDiff(a, b).length === 0;
+
+    for (let i = 0; i < len; i++) {
+        if (a[i] !== b[i]) return false;
+    }
+    return true;
+};
+
+export {arrayDiff, compareArray};
