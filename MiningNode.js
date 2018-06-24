@@ -19,6 +19,10 @@ export default class MiningNode extends Node {
         }
     };
 
+    dispenseCards = (currentGameBlock) => {
+        this.chain.dispenseCards(currentGameBlock);
+    };
+
     propagateNewBlock = () => {
         for(const nodeID in nodes) {
             if(!nodes.hasOwnProperty(nodeID)) continue;
@@ -26,10 +30,5 @@ export default class MiningNode extends Node {
                 nodes[nodeID].receiveChain(this.chain);
             }
         }
-        // for(let i = 0; i < numNode; i++) {
-        //     if(nodeList[i].receiveNewBlock(this.chain.getLatestBlock()) === -1) {
-        //         nodeList[i].receiveChain(this.chain);
-        //     }
-        // }
     };
 }

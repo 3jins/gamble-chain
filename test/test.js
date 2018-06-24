@@ -19,6 +19,14 @@ checkTimeSpent(
 }).then(() => {
     nodes.gB.propagateNewTransaction();
 }).then(() => {
+    nodes.gB.suggestGameStart();
+}).then(() => {
+    nodes.gB.propagateNewTransaction();
+}).then(() => {
+    nodes.gA.suggestGameStart();
+}).then(() => {
+    nodes.gA.propagateNewTransaction();
+}).then(() => {
     nodes.gA.betStakes("1000");
 }).then(() => {
     nodes.gA.propagateNewTransaction();

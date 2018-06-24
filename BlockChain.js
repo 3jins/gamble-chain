@@ -17,7 +17,7 @@ export default class BlockChain {
     };
 
     getLatestBlock = () => {
-        if(this.chain.length === 0) return null;
+        if (this.chain.length === 0) return null;
         return this.chain[this.chain.length - 1];
     };
 
@@ -27,7 +27,7 @@ export default class BlockChain {
 
     addBlock = (newBlock) => {
         const latestBlock = this.getLatestBlock();
-        if(latestBlock === null) return;
+        if (latestBlock === null) return;
         newBlock.previousBlockHash = latestBlock.blockHash;
         newBlock.mine(this.difficulty);
         this.chain.push(newBlock);
@@ -35,7 +35,7 @@ export default class BlockChain {
 
     renewTransaction = (newTransactions) => {
         const latestBlock = this.getLatestBlock();
-        if(latestBlock === null) return;
+        if (latestBlock === null) return;
         latestBlock.replaceTransaction(newTransactions);
     };
 
@@ -54,40 +54,22 @@ export default class BlockChain {
         let leastCrowdedGameBlockIdx = 0;
 
         for (let i = 1; i < chainLength; i++) {
-            if(leastCrowdedGameBlockIdx > this.chain[i].getNumParticipants)
+            if (leastCrowdedGameBlockIdx > this.chain[i].getNumParticipants)
                 leastNumParticipants = this.chain[i].getNumParticipants;
-                leastCrowdedGameBlockIdx = i;
+            leastCrowdedGameBlockIdx = i;
         }
 
-        if(leastNumParticipants >= 9) return -1;
+        if (leastNumParticipants >= 9) return -1;
         return leastCrowdedGameBlockIdx;
     };
 
-    /*
-     * 1. Join a game: save game block
-     * 2. Get cards
-     */
     joinGame = (userID) => {
         const gameIdx = this.findGame();
-        const cardDispense = {};
         if (gameIdx < 0) {
-            console.log("Every gameblock is full. Why don\'t you make a new game block and be a room master?")
+            console.log("Every gameblock is full.");
             return;
         }
         this.currentGameBlock = this.chain[gameIdx];
-
-        const remainDeck = this.currentGameBlock.getLatestDeckHistory();
-        const cards = [];
-        while (cards.length < 2) {
-            let cardCandidate = Math.floor(Math.random() * 100 % 20 + 1);
-            if (cardCandidate in remainDeck) {
-                cards.push(cardCandidate);
-            }
-        }
-        this.currentGameBlock = this.getSpecificBlock(gameIdx);
-        this.currentGameBlock.addTransaction("deckHistory", arrayDiff(remainDeck, cards));
-        cardDispense[userID] = cards;
-        this.currentGameBlock.addTransaction("cardDispenseHistory", cardDispense);
     };
 
     checkUnanimityGameStart = () => {
@@ -99,15 +81,36 @@ export default class BlockChain {
 
     suggestGameStart = (userID) => {
         this.currentGameBlock.addTransaction("gameStartPolls", userID);
-        if(this.checkUnanimityGameStart()) {
+        if (this.checkUnanimityGameStart()) {
             const gameBlockMiner = this.currentGameBlock.miner;
-            //nodes[gameBlockMiner].dispenseCards;
+            nodes[gameBlockMiner].dispenseCards(this.currentGameBlock);
+        }
+    };
+
+    dispenseCards = (currentGameBlock) => {
+        const participants = currentGameBlock.participants;
+        const numParticipants = participants.length;
+        const cardDispense = {};
+        const remainDeck = this.currentGameBlock.getLatestDeckHistory();
+        const cards = [];
+
+        for (let i = 0; i < numParticipants; i++) {
+            while (cards.length < 2) {
+                let cardCandidate = Math.floor(Math.random() * 100 % 20 + 1);
+                if (cardCandidate in remainDeck) {
+                    cards.push(cardCandidate);
+                }
+            }
+            this.currentGameBlock = this.getSpecificBlock(gameIdx);
+            this.currentGameBlock.addTransaction("deckHistory", arrayDiff(remainDeck, cards));
+            cardDispense[participants[i]] = cards;
+            this.currentGameBlock.addTransaction("cardDispenseHistory", cardDispense);
         }
     };
 
     /* Add a betting record to the game block. */
     betStakes = (userID, stake) => {
-        if(this.currentGameBlock === null) return false;
+        if (this.currentGameBlock === null) return false;
 
         const bettingRecord = {};
         bettingRecord[userID] = stake;
