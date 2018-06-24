@@ -8,11 +8,11 @@ export default class BlockChain {
         this.difficulty = difficulty;
         this.pendingTransactions = [];
         this.currentGameBlock = null;
-        //this.miningReward = 100;  // Maybe it won't needed in this system.
+        // this.miningReward = 100;
     }
 
-    createGenesisBlock = () => {
-        this.chain.push(new Block("Genesis Block"));
+    createGenesisBlock = (userID) => {
+        this.chain.push(new Block(userID, "Genesis Block"));
     };
 
     getLatestBlock = () => {
