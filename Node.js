@@ -12,13 +12,12 @@ export default class Node {
 
     propagateNewTransaction = (nodes) => {
         const currentGameBlock = this.chain.currentGameBlock;
-        const cardDispenseHistory = currentGameBlock.transactions.cardDispenseHistory;
-        const numNode = cardDispenseHistory.length;
+        const nodeIDList = currentGameBlock.transactions.participants;
+        const numNode = nodeIDList.length;
         const nodeList = [];
 
         for (let i = 0; i < numNode; i++) {
-            const nodeID = Object.keys(cardDispenseHistory[i])[0];
-            nodeList.push(nodes[nodeID]);
+            nodeList.push(nodes[nodeIDList[i]]);
         }
         for (let i = 0; i < numNode; i++) {
             nodeList[i].receiveNewTransaction(this.chain.getLatestBlock().transactions);
