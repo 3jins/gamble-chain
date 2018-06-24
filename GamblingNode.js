@@ -11,5 +11,6 @@ export default class GamblingNode extends Node {
 
     betStakes = (stake) => {
         this.chain.betStakes(this.userID, stake);
-    }
+    };
+
 }

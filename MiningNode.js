@@ -17,4 +17,13 @@ export default class MiningNode extends Node {
             this.chain.addBlock(new Block);
         }
     };
+
+    propagateNewBlock = (nodeList) => {
+        const numNode = nodeList.length;
+        for(let i = 0; i < numNode; i++) {
+            if(nodeList[i].receiveNewBlock(this.chain.getLatestBlock()) === -1) {
+                nodeList[i].receiveChain(this.chain);
+            }
+        }
+    };
 }
