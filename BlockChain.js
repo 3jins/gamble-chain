@@ -1,7 +1,7 @@
 'use strict';
 import Block from './Block';
-import {arrayDiff} from './utils/ArrayUtills';
-import nodes from './test/CentralNodeStore';
+import {arrayDiff, compareArray} from './utils/ArrayUtills';
+import {nodeStore as nodes} from './test/CentralNodeStore';
 
 export default class BlockChain {
     constructor(difficulty) {
@@ -70,6 +70,7 @@ export default class BlockChain {
             return;
         }
         this.currentGameBlock = this.chain[gameIdx];
+        this.currentGameBlock.addTransaction("participants", userID);
         console.log(userID + " joined a game block. (game index: " + gameIdx + ")");
     };
 
@@ -77,7 +78,7 @@ export default class BlockChain {
         const gameStartPolls = this.currentGameBlock.transactions.gameStartPolls;
         const participants = this.currentGameBlock.transactions.participants;
 
-        return participants.length >= 2 && gameStartPolls === participants;
+        return participants.length >= 2 && compareArray(gameStartPolls, participants, false);
     };
 
     suggestGameStart = (userID) => {
@@ -91,7 +92,7 @@ export default class BlockChain {
     };
 
     dispenseCards = (currentGameBlock) => {
-        const participants = currentGameBlock.participants;
+        const participants = currentGameBlock.transactions.participants;
         const numParticipants = participants.length;
         const cardDispense = {};
         const remainDeck = this.currentGameBlock.getLatestDeckHistory();
@@ -104,10 +105,9 @@ export default class BlockChain {
                     cards.push(cardCandidate);
                 }
             }
-            this.currentGameBlock = this.getSpecificBlock(gameIdx);
-            this.currentGameBlock.addTransaction("deckHistory", arrayDiff(remainDeck, cards));
+            currentGameBlock.addTransaction("deckHistory", arrayDiff(remainDeck, cards));
             cardDispense[participants[i]] = cards;
-            this.currentGameBlock.addTransaction("cardDispenseHistory", cardDispense);
+            currentGameBlock.addTransaction("cardDispenseHistory", cardDispense);
         }
 
         let msg = "Cards are dispensed to ";
