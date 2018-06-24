@@ -1,6 +1,7 @@
 import Node from './Node';
 import Block from './Block';
 import BlockChain from './BlockChain';
+import {arrayDiff} from './utils/ArrayUtills';
 import {nodeStore as nodes} from "./test/CentralNodeStore";
 
 export default class MiningNode extends Node {
@@ -20,7 +21,32 @@ export default class MiningNode extends Node {
     };
 
     dispenseCards = (currentGameBlock) => {
-        this.chain.dispenseCards(currentGameBlock);
+        const participants = currentGameBlock.transactions.participants;
+        const numParticipants = participants.length;
+        const cardDispense = {};
+        const remainDeck = this.chain.currentGameBlock.getLatestDeckHistory();
+        const cards = [];
+
+        for (let i = 0; i < numParticipants; i++) {
+            while (cards.length < 2) {
+                let cardCandidate = Math.floor(Math.random() * 100 % 20 + 1);
+                if (cardCandidate in remainDeck) {
+                    cards.push(cardCandidate);
+                }
+            }
+            currentGameBlock.addTransaction("deckHistory", arrayDiff(remainDeck, cards));
+            cardDispense[participants[i]] = cards;
+            currentGameBlock.addTransaction("cardDispenseHistory", cardDispense);
+        }
+
+        let msg = "Cards are dispensed to ";
+        for(let i = 0; i < numParticipants; i++) {
+            msg += participants[i];
+            if(i < numParticipants) {
+                msg += ", ";
+            }
+        }
+        console.log(msg);
     };
 
     propagateNewBlock = () => {
