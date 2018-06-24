@@ -17,7 +17,7 @@
     "babel-preset-es2015": "^6.24.1"
   },
   "scripts": {
-    "test": "babel-node test.js",
+    "test": "babel-node test/test.js",
     "start": "babel-node Index.js"
   },
   "repository": {

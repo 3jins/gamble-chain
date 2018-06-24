@@ -1,6 +1,7 @@
 import Node from './Node';
 import Block from './Block';
 import BlockChain from './BlockChain';
+import {nodeStore as nodes} from "./test/CentralNodeStore";
 
 export default class MiningNode extends Node {
     constructor(userID, difficulty) {
@@ -18,12 +19,17 @@ export default class MiningNode extends Node {
         }
     };
 
-    propagateNewBlock = (nodeList) => {
-        const numNode = nodeList.length;
-        for(let i = 0; i < numNode; i++) {
-            if(nodeList[i].receiveNewBlock(this.chain.getLatestBlock()) === -1) {
-                nodeList[i].receiveChain(this.chain);
+    propagateNewBlock = () => {
+        for(const nodeID in nodes) {
+            if(!nodes.hasOwnProperty(nodeID)) continue;
+            if(nodes[nodeID].receiveNewBlock(this.chain.getLatestBlock()) === -1) {
+                nodes[nodeID].receiveChain(this.chain);
             }
         }
+        // for(let i = 0; i < numNode; i++) {
+        //     if(nodeList[i].receiveNewBlock(this.chain.getLatestBlock()) === -1) {
+        //         nodeList[i].receiveChain(this.chain);
+        //     }
+        // }
     };
 }

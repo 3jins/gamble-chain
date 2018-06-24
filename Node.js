@@ -1,6 +1,7 @@
 'use strict';
 import RSAKey from './utils/RSAKey';
 import AESKey from './utils/AESKey';
+import {nodeStore as nodes} from "./test/CentralNodeStore";
 
 export default class Node {
     constructor(userID, difficulty) {
@@ -10,7 +11,7 @@ export default class Node {
         // this.aesKey = new AESKey();
     }
 
-    propagateNewTransaction = (nodes) => {
+    propagateNewTransaction = () => {
         const currentGameBlock = this.chain.currentGameBlock;
         const nodeIDList = currentGameBlock.transactions.participants;
         const numNode = nodeIDList.length;
