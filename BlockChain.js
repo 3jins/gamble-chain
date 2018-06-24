@@ -26,9 +26,16 @@ export default class BlockChain {
 
     addBlock = (newBlock) => {
         const latestBlock = this.getLatestBlock();
+        if(latestBlock === null) return;
         newBlock.previousBlockHash = latestBlock.blockHash;
         newBlock.mine(this.difficulty);
         this.chain.push(newBlock);
+    };
+
+    renewTransaction = (newTransactions) => {
+        const latestBlock = this.getLatestBlock();
+        if(latestBlock === null) return;
+        latestBlock.replaceTransaction(newTransactions);
     };
 
     /* Find the optimum game block.

@@ -28,6 +28,10 @@ export default class Block {
         this.transactions[type].push(data);
     };
 
+    replaceTransaction = (newTransactions) => {
+        this.transactions = newTransactions;
+    };
+
     calculateBlockHash = () => {
         return calcHash(this.timestamp + JSON.stringify(this.transaction) + this.previousBlockHash + this.nonce).toString();
     };
