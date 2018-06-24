@@ -7,28 +7,32 @@ const difficulty = 3;
 const miningNodeA = new MiningNode('mA', difficulty);
 const gamblingNodeA = new GamblingNode('gA');
 const gamblingNodeB = new GamblingNode('gB');
+const nodes = {
+    'mA': miningNodeA,
+    'gA': gamblingNodeA,
+    'gB': gamblingNodeB,
+};
 const nodeList = [miningNodeA, gamblingNodeA, gamblingNodeB];
+
 
 checkTimeSpent(
     () => miningNodeA.makeGameRoom(),
     miningNodeA.userID,
-    "create a genesis block"
+    "create a genesis block and a new game block"
 ).then(() => {
-    checkTimeSpent(
-        () => miningNodeA.makeGameRoom(),
-        miningNodeA.userID,
-        "create a new game block"
-    )
-}).then(() => {
-    miningNodeA.propagateChainTemp(nodeList);
+    miningNodeA.propagateNewBlock(nodeList);
 }).then(() => {
     gamblingNodeA.joinGame();
 }).then(() => {
-    gamblingNodeA.propagateChainTemp(nodeList);
+    gamblingNodeA.propagateNewTransaction(nodes);
 }).then(() => {
     gamblingNodeB.joinGame();
 }).then(() => {
-    gamblingNodeB.propagateChainTemp(nodeList);
+    gamblingNodeB.propagateNewTransaction(nodes);
+}).then(() => {
+    gamblingNodeA.betStakes("1000");
+}).then(() => {
+    gamblingNodeA.propagateNewTransaction(nodes);
 }).then(() => {
     console.log(gamblingNodeB.chain.chain.length);
     for(let i=0; i<gamblingNodeB.chain.chain.length; i++) {
