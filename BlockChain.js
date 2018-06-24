@@ -1,6 +1,7 @@
 'use strict';
 import Block from './Block';
 import {arrayDiff} from './utils/ArrayUtills';
+import nodes from './test/CentralNodeStore';
 
 export default class BlockChain {
     constructor(difficulty) {
@@ -87,6 +88,21 @@ export default class BlockChain {
         this.currentGameBlock.addTransaction("deckHistory", arrayDiff(remainDeck, cards));
         cardDispense[userID] = cards;
         this.currentGameBlock.addTransaction("cardDispenseHistory", cardDispense);
+    };
+
+    checkUnanimityGameStart = () => {
+        const gameStartPolls = this.currentGameBlock.transactions.gameStartPolls;
+        const participants = this.currentGameBlock.transactions.participants;
+
+        return participants.length >= 2 && gameStartPolls === participants;
+    };
+
+    suggestGameStart = (userID) => {
+        this.currentGameBlock.addTransaction("gameStartPolls", userID);
+        if(this.checkUnanimityGameStart()) {
+            const gameBlockMiner = this.currentGameBlock.miner;
+            //nodes[gameBlockMiner].dispenseCards;
+        }
     };
 
     /* Add a betting record to the game block. */

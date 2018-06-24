@@ -9,8 +9,11 @@ export default class GamblingNode extends Node {
         this.chain.joinGame(this.userID);
     };
 
+    suggestGameStart = () => {
+        this.chain.suggestGameStart(this.userID);
+    };
+
     betStakes = (stake) => {
         this.chain.betStakes(this.userID, stake);
     };
-
 }
