@@ -29,4 +29,12 @@ const compareArray = (a, b, isStrict = true) => {
     return true;
 };
 
-export {arrayDiff, compareArray};
+const isElementIn = (element, array) => {
+    const arrLen = array.length;
+    for (let i = 0; i < arrLen; i++) {
+        if (element === array[i]) return true;
+    }
+    return false;
+};
+
+export {arrayDiff, compareArray, isElementIn};
