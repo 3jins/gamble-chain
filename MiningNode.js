@@ -11,12 +11,25 @@ export default class MiningNode extends Node {
     }
 
     makeGameRoom = () => {
+        const signedUserID = this.rsaKey.sign(this.userID);
         if(this.chain.getLatestBlock() === null) {  // There is no block in chain
             (async () => await this.chain.createGenesisBlock())()
-                .then(() => this.chain.addBlock(new Block(this.userID)));
+                .then(
+                    () => this.chain.addBlock(
+                        new Block({
+                            value: this.userID,
+                            signature: signedUserID
+                        })
+                    )
+                );
         }
         else {  // There is at least one block in chain
-            this.chain.addBlock(new Block(this.userID));
+            this.chain.addBlock(
+                new Block({
+                    value: this.userID,
+                    signature: signedUserID
+                })
+            );
         }
     };
 
@@ -35,8 +48,11 @@ export default class MiningNode extends Node {
                     soldOuts.push(cardCandidate);
                 }
             }
-            cardDispense[participants[i]] = cards;
-            currentGameBlock.addTransaction("cardDispenseHistory", cardDispense);
+            cardDispense[participants[i]] = this.rsaKey.encrypt(cards.toString());
+            currentGameBlock.addTransaction(
+                "cardDispenseHistory",
+                cardDispense
+            );
         }
 
         let msg = "Cards are dispensed to ";

@@ -1,5 +1,6 @@
 'use strict';
 import calcHash from 'crypto-js/sha256';
+import {nodeStore as nodes} from './test/CentralNodeStore';
 
 export default class Block {
     constructor(miner, initialTransaction = '', previousHash = '') {
@@ -16,6 +17,35 @@ export default class Block {
         this.nonce = 0;
         this.blockHash = this.calculateBlockHash();
     }
+
+    verifyMinerSignature = () => {
+        const minerObj = nodes[this.miner.value];
+        return minerObj.rsaKey.verify(this.miner.signature, this.miner.value, minerObj.rsaKey.getPublicKey());
+    };
+
+    decryptCardDispenseHistory = (idx) => {
+        const dispenseCards = this.transactions.cardDispenseHistory;
+        const userID = dispenseCards.keys()[idx];
+        return this.rsaKey.decrypt(dispenseCards[idx][userID]).split(',').map((item) => Number(item));
+    };
+
+    verifyParticipants = (idx) => {
+        const participant = this.transactions.participants[idx];
+        const participantObj = nodes[participant.value];
+        return participantObj.rsaKey.verify(participant.signature, participant.value, participantObj.rsaKey.getPublicKey());
+    };
+
+    verifyGameStartPolls = (idx) => {
+        const gameStartProposer = this.transactions.gameStartPolls[idx];
+        const gameStartProposerObj = nodes[gameStartProposer.value];
+        return gameStartProposerObj.rsaKey.verify(gameStartProposer.signature, gameStartProposer.value, gameStartProposerObj.rsaKey.getPublicKey());
+    };
+
+    verifyBettingHistory = () => {
+        const bettingRecord = this.transactions.bettingHistory[idx];
+        const gamblerObj = nodes[bettingRecord.value];
+        return gamblerObj.rsaKey.verify(bettingRecord.signature, bettingRecord.value, gamblerObj.rsaKey.getPublicKey());
+    };
 
     getNumParticipants = () => {
         return this.transactions.cardDispense.length;

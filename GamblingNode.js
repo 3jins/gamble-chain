@@ -34,6 +34,7 @@ export default class GamblingNode extends Node {
     };
 
     joinGame = () => {
+        const signedUserID = this.rsaKey.sign(this.userID);
         const blockChain = this.chain;
         const chain = blockChain.chain;
         const gameIdx = this.findGame();
@@ -42,7 +43,10 @@ export default class GamblingNode extends Node {
             return;
         }
         blockChain.currentGameBlock = chain[gameIdx];
-        blockChain.currentGameBlock.addTransaction("participants", this.userID);
+        blockChain.currentGameBlock.addTransaction(
+            "participants",
+            {value: this.userID, signature: signedUserID}
+        );
         console.log(this.userID + " joined a game block. (game index: " + gameIdx + ")");
     };
 
@@ -55,13 +59,19 @@ export default class GamblingNode extends Node {
     };
 
     suggestGameStart = () => {
+        const signedUserID = this.rsaKey.sign(this.userID);
         const blockChain = this.chain;
-        blockChain.currentGameBlock.addTransaction("gameStartPolls", this.userID);
+        blockChain.currentGameBlock.addTransaction(
+            "gameStartPolls",
+            {value: this.userID, signature: signedUserID}
+        );
         console.log(this.userID + " suggested start the game.");
         if (this.checkUnanimityGameStart()) {
             console.log("Every node in this gameblock agreed to start the game.");
-            const gameBlockMiner = blockChain.currentGameBlock.miner;
-            nodes[gameBlockMiner].dispenseCards(blockChain.currentGameBlock);
+            const gameBlockMinerID = blockChain.currentGameBlock.miner.value;
+            if (blockChain.currentGameBlock.verifyMinerSignature()) {
+                nodes[gameBlockMinerID].dispenseCards(blockChain.currentGameBlock);
+            }
         }
     };
 
@@ -71,7 +81,10 @@ export default class GamblingNode extends Node {
         if (blockChain.currentGameBlock === null) return false;
 
         const bettingRecord = {};
-        bettingRecord[this.userID] = stake;
+        bettingRecord[this.userID] = {
+            value: stake,
+            signature: this.rsaKey.sign(stake)
+        };
         blockChain.currentGameBlock.addTransaction("bettingHistory", bettingRecord);
 
         console.log(this.userID + " bet! ($" + stake + ")");

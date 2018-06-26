@@ -13,11 +13,12 @@ export default class Node {
 
     propagateNewTransaction = () => {
         const currentGameBlock = this.chain.currentGameBlock;
-        const nodeIDList = currentGameBlock.transactions.participants;
+        const nodeIDList = currentGameBlock.transactions.participants.map((participant) => participant.value);
         const numNode = nodeIDList.length;
         const nodeList = [];
 
         for (let i = 0; i < numNode; i++) {
+            if(!currentGameBlock.verifyParticipants(i)) return;
             nodeList.push(nodes[nodeIDList[i]]);
         }
         for (let i = 0; i < numNode; i++) {
