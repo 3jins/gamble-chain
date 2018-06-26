@@ -1,0 +1,37 @@
+body {
+    background-image: url('imgs/bg.png');
+    background-size: auto 110%;
+    background-position: center;
+    height: 100vh;
+    margin: 0;
+    text-align: center;
+}
+
+.title-index {
+    color: white;
+}
+
+.wrapper-index {
+    width: 100vw;
+    height: 100vh;
+    display: table-cell;
+    vertical-align: middle;
+    background-color: rgba(0, 0, 0, 0.5);
+
+}
+
+.init-setting-box {
+    width: 70%;
+    margin: auto auto;
+    padding: 5em 1em;
+    border: white solid 4px;
+    color: white;
+    text-align: center;
+}
+.init-setting-box input {
+    text-align: center;
+}
+.init-setting-box .ok-button {
+    width: 10em;
+    height: 2em;
+}
